@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.freecode.redditclone.dto.RegisterRequest;
+import com.freecode.redditclone.model.NotificationEmail;
 import com.freecode.redditclone.model.User;
 import com.freecode.redditclone.model.VerificationToken;
 import com.freecode.redditclone.repository.UserRepository;
@@ -25,6 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
+    private final MailService mailService;
 
     public void signup(RegisterRequest registerRequest){
         User user =new User();
@@ -36,6 +38,12 @@ public class AuthService {
 
         userRepository.save(user);
         String token=generateVerificationToken(user);
+        mailService.sendMail(new NotificationEmail("Please Activate your Account",
+        user.getEmail(),"Thank you for signing up to Spring Reddit,"+
+        "please click on the below url to activate your account: "+
+        "http://localhost::8080/api/auth/accountVerification/"+token));
+        
+
     }
 
 
