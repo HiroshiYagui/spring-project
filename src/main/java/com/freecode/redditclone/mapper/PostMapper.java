@@ -24,14 +24,14 @@ import static com.freecode.redditclone.model.VoteType.DOWNVOTE;
 import static com.freecode.redditclone.model.VoteType.UPVOTE;
 
 @Mapper(componentModel="spring")
-public interface PostMapper {
+public abstract class PostMapper {
 
-    /*@Autowired
+    @Autowired
     private CommentRepository commentRepository;
     @Autowired
     private VoteRepository voteRepository;
     @Autowired
-    private AuthService authService;*/
+    private AuthService authService;
 
     
 
@@ -40,18 +40,18 @@ public interface PostMapper {
     @Mapping(target = "subreddit", source = "subreddit")
     @Mapping(target = "voteCount", constant = "0")
     @Mapping(target = "user", source = "user")
-    public Post map(PostRequest postRequest, Subreddit subreddit, User user);
+    public abstract Post map(PostRequest postRequest, Subreddit subreddit, User user);
 
     @Mapping(target = "id",source = "postId")
     @Mapping(target = "subredditName" , source="subreddit.name")
     @Mapping(target = "userName",source = "user.username")
-    //@Mapping(target = "commentCount",source = "java(commentCount(post))")
-    //@Mapping(target = "duration", source = "java(getDuration(post))")
-    //@Mapping(target = "upVote",expression = "java(isPostUpVoted(post))")
-    //@Mapping(target = "downVote",expression = "java(isPostDownvoted(post))")
-    public  PostResponse mapToDto(Post post);
+    @Mapping(target = "commentCount", expression =   "java(commentCount(post))")
+    @Mapping(target = "duration", expression =  "java(getDuration(post))")
+    @Mapping(target = "upVote",expression = "java(isPostUpVoted(post))")
+    @Mapping(target = "downVote",expression = "java(isPostDownvoted(post))")
+    public abstract  PostResponse mapToDto(Post post);
 
-    /*Integer commentCount(Post post){
+    Integer commentCount(Post post){
         return commentRepository.findByPost(post).size();
     }
 
@@ -77,5 +77,5 @@ public interface PostMapper {
             }
 
         return false;
-    }*/
+    }
 }
